@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Command Ecosystem</title>
+    <!-- Fonts: Inter for UI, JetBrains Mono for Terminal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- D3.js for Knowledge Graph -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body class="dark-theme">
+    <div id="app" class="app-container">
+        <!-- Main Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">Terminal Command Ecosystem</h1>
+                <p class="app-subtitle">Visual Knowledge Map of Cross-Platform Terminal Commands</p>
+            </div>
+            
+            <!-- Segmented Control Navigation -->
+            <nav class="segmented-nav">
+                <button class="nav-btn active" data-section="explorer">Graph Explorer</button>
+                <button class="nav-btn" data-section="documentation">Documentation</button>
+                <button class="nav-btn" data-section="terminal">Terminal Simulator</button>
+                <button class="nav-btn" data-section="quiz">Quiz Mode</button>
+            </nav>
+        </header>
+
+        <main class="app-main">
+            <!-- Graph Explorer Section -->
+            <section id="explorer" class="section active">
+                <div class="explorer-grid">
+                    <!-- Left Sidebar: Controls -->
+                    <aside class="sidebar sidebar-left">
+                        <div class="sidebar-panel">
+                            <h3 class="panel-title">Filters & Search</h3>
+                            <div class="search-box">
+                                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="graph-search" placeholder="Search commands...">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Operating Systems</label>
+                                <div class="checkbox-list">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" class="os-filter" value="linux" checked>
+                                        <span class="custom-checkbox"></span>
+                                        Linux
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" class="os-filter" value="macos" checked>
+                                        <span class="custom-checkbox"></span>
+                                        macOS
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" class="os-filter" value="windows" checked>
+                                        <span class="custom-checkbox"></span>
+                                        Windows
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="show-cross-platform" checked>
+                                    <span class="custom-checkbox"></span>
+                                    Show Cross-Platform Links
+                                </label>
+                            </div>
+                            
+                            <div class="graph-legend">
+                                <h4 class="legend-title">Legend</h4>
+                                <div class="legend-item"><span class="node-dot cmd"></span> Command</div>
+                                <div class="legend-item"><span class="node-dot cat"></span> Category</div>
+                                <div class="legend-item"><span class="node-dot os"></span> OS Core</div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Main Viewport: The Graph -->
+                    <div class="graph-viewport">
+                        <div id="graph-container"></div>
+                    </div>
+
+                    <!-- Right Sidebar: Details Panel -->
+                    <aside class="sidebar sidebar-right">
+                        <div id="details-panel" class="details-panel empty">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                                </div>
+                                <p>Select a command node to view details</p>
+                            </div>
+                            
+                            <div class="details-content hidden">
+                                <header class="details-header">
+                                    <span id="detail-category" class="badge">Category</span>
+                                    <h2 id="detail-title" class="details-name">Command</h2>
+                                </header>
+                                
+                                <p id="detail-description" class="details-desc">Description of the command.</p>
+                                
+                                <div class="details-section">
+                                    <h4 class="section-label">Syntax</h4>
+                                    <pre class="code-block"><code id="detail-syntax">ls [options]</code></pre>
+                                </div>
+
+                                <div class="details-section">
+                                    <h4 class="section-label">Example</h4>
+                                    <pre class="code-block"><code id="detail-example">ls -la</code></pre>
+                                </div>
+
+                                <div class="details-section">
+                                    <h4 class="section-label">Equivalents</h4>
+                                    <div id="detail-equivalents" class="equivalents-list">
+                                        <!-- Populated via JS -->
+                                    </div>
+                                </div>
+
+                                <button id="run-in-terminal-btn" class="btn btn-primary btn-full">
+                                    Practice in Simulator
+                                </button>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- OS Documentation Section -->
+            <section id="documentation" class="section">
+                <div class="doc-container">
+                    <header class="doc-header">
+                        <div class="doc-tabs">
+                            <button class="doc-tab-btn active" data-os="linux">Linux Documentation</button>
+                            <button class="doc-tab-btn" data-os="mac">macOS Documentation</button>
+                            <button class="doc-tab-btn" data-os="windows">Windows Documentation</button>
+                        </div>
+                    </header>
+                    <div id="doc-content" class="doc-content-area">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Terminal Simulator Section -->
+            <section id="terminal" class="section">
+                <div class="terminal-container">
+                    <div class="terminal-window">
+                        <div class="terminal-bar">
+                            <div class="terminal-dots">
+                                <span class="dot close"></span>
+                                <span class="dot minimize"></span>
+                                <span class="dot maximize"></span>
+                            </div>
+                            <div class="shell-selector-container">
+                                <select id="shell-selector" class="shell-dropdown">
+                                    <option value="linux">Linux Terminal (bash)</option>
+                                    <option value="macos">macOS Terminal (zsh)</option>
+                                    <option value="powershell">Windows PowerShell</option>
+                                    <option value="cmd">Windows CMD</option>
+                                </select>
+                            </div>
+                            <div id="terminal-tab-title" class="terminal-tab active">
+                                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                                bash — simulator
+                            </div>
+                        </div>
+                        <div id="terminal-output" class="terminal-content">
+                            <div class="terminal-line welcome">Welcome to the Terminal Command Ecosystem Simulator v1.0.0</div>
+                            <div class="terminal-line info">Type 'help' to see available commands or explore the graph.</div>
+                        </div>
+                        <div class="terminal-input-row">
+                            <span class="terminal-prompt">user@simulator:~$</span>
+                            <div class="input-wrapper">
+                                <input type="text" id="terminal-input" spellcheck="false" autocomplete="off" autofocus>
+                                <div id="terminal-suggestion" class="suggestion-hint"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Mode Section -->
+            <section id="quiz" class="section">
+                <div class="quiz-container">
+                    <div id="quiz-card" class="quiz-card">
+                        <div id="quiz-question-area">
+                            <div class="quiz-progress">
+                                Question <span id="current-q-index">1</span> of 10
+                            </div>
+                            <h2 id="quiz-question" class="quiz-question">What does the 'ls' command do?</h2>
+                            <div id="quiz-options" class="quiz-options">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-footer">
+                            <div class="quiz-score">
+                                Score: <span id="current-score" class="score-val">0</span>
+                            </div>
+                        </div>
+
+                        <div id="quiz-result" class="quiz-result hidden">
+                            <div class="result-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </div>
+                            <h2 class="result-title">Quiz Completed!</h2>
+                            <p class="result-text">You scored <span id="final-score">0</span> points.</p>
+                            <button id="restart-quiz-btn" class="btn btn-primary">Try Again</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2026 Terminal Command Ecosystem • Designed for visual learning.</p>
+        </footer>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
