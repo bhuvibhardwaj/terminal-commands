@@ -2,7 +2,7 @@
 
 A comprehensive developer terminal learning platform featuring an interactive knowledge graph, OS documentation, terminal simulator, and quiz system.
 
-## 🔒 Secure Backend Architecture
+## Secure Backend Architecture
 
 The application is now powered by a **Secure Node.js Backend** that implements industry-standard security practices:
 
@@ -11,7 +11,7 @@ The application is now powered by a **Secure Node.js Backend** that implements i
 - **Express-Rate-Limit**: Protects the server from DoS and brute-force attacks by limiting requests to 100 per 15 minutes per IP.
 - **Input Sanitization**: Terminal simulator handles user input safely without execution on the host machine.
 
-## 🚀 Getting Started
+## Getting Started
 
 1. **Install Dependencies**:
    ```bash
@@ -24,14 +24,14 @@ The application is now powered by a **Secure Node.js Backend** that implements i
    ```
    The application will be available at `http://localhost:8001`.
 
-## 🛠️ Features
+## Features
 
 - **Knowledge Graph**: Explore command relationships visually (D3.js).
 - **OS Documentation**: platform-specific guides for Linux, macOS, and Windows.
 - **Terminal Simulator**: Practice commands in a safe, simulated environment with `sudo` support.
 - **Quiz Mode**: Test your knowledge with dynamically generated questions.
 
-## 🛡️ Security & Hardening Category
+## Security & Hardening Category
 
 A dedicated command category for **Security & Hardening** has been added, covering:
 - Firewall management (`ufw`, `iptables`)
