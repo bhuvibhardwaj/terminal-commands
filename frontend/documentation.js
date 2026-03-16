@@ -2,14 +2,22 @@ import { commandDatabase } from './commandDatabase.js';
 
 class Documentation {
     constructor() {
-        this.container = document.getElementById('doc-content');
-        this.tabBtns = document.querySelectorAll('.doc-tab-btn');
+        this.container = null;
+        this.tabBtns = null;
         this.currentOS = 'linux';
         this.initialized = false;
+        this.osKeyMap = {
+            linux: 'linux',
+            macos: 'mac',
+            windows: 'windows'
+        };
     }
 
     init() {
         if (!this.initialized) {
+            this.container = document.getElementById('doc-content');
+            this.tabBtns = document.querySelectorAll('.doc-tab-btn');
+            
             this.tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     this.tabBtns.forEach(b => b.classList.remove('active'));
@@ -48,10 +56,11 @@ class Documentation {
                 commandGrid.className = 'doc-command-grid';
                 
                 categoryCommands.forEach(cmd => {
+                    const dbOSKey = this.osKeyMap[this.currentOS];
+                    const osCommand = cmd.commands[dbOSKey] || cmd.name;
+                    
                     const cmdCard = document.createElement('div');
                     cmdCard.className = 'doc-command-card';
-                    
-                    const osCommand = cmd.commands[this.currentOS] || cmd.name;
                     
                     cmdCard.innerHTML = `
                         <div class="doc-cmd-header">

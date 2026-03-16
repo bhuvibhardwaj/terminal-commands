@@ -18,8 +18,19 @@ export class CommandExplorer {
     }
 
     init() {
+        if (typeof d3 === 'undefined') {
+            console.error('D3.js is not loaded.');
+            this.container.innerHTML = '<div class="error">D3.js is not loaded. Please check your internet connection.</div>';
+            return;
+        }
         const width = this.container.clientWidth;
         const height = this.container.clientHeight;
+
+        if (width === 0 || height === 0) {
+            // Wait for next frame to ensure dimensions are ready
+            requestAnimationFrame(() => this.init());
+            return;
+        }
 
         this.container.innerHTML = '';
 
@@ -38,7 +49,7 @@ export class CommandExplorer {
         new ResizeObserver(() => {
             const w = this.container.clientWidth;
             const h = this.container.clientHeight;
-            if (this.simulation) {
+            if (this.simulation && w > 0 && h > 0) {
                 this.simulation.force('center', d3.forceCenter(w / 2, h / 2)).alpha(0.3).restart();
             }
         }).observe(this.container);
@@ -81,7 +92,7 @@ export class CommandExplorer {
             .attr('class', 'node')
             .call(this.drag(this.simulation))
             .on('click', (event, d) => this.handleNodeClick(d))
-            .on('mouseover', (event, d) => this.handleNodeHover(d))
+            .on('mouseover', (event, d) => this.handleNodeHover(event, d))
             .on('mouseout', () => this.handleNodeUnhover());
 
         this.node.append('circle')
@@ -234,7 +245,7 @@ export class CommandExplorer {
         this.detailsPanel.classList.remove('empty');
 
         document.getElementById('detail-category').textContent = d.data.category;
-        document.getElementById('detail-title').textContent = d.name;
+        document.getElementById('detail-title').textContent = d.label;
         document.getElementById('detail-description').textContent = d.data.description;
         document.getElementById('detail-syntax').textContent = d.data.syntax;
         document.getElementById('detail-example').textContent = d.data.example;
@@ -249,9 +260,9 @@ export class CommandExplorer {
         if (this.onCommandSelected) this.onCommandSelected(d.data);
     }
 
-    handleNodeHover(d) {
+    handleNodeHover(event, d) {
         if (d.type === 'command') {
-            this.showTooltip(d);
+            this.showTooltip(event, d);
         }
 
         const connectedNodeIds = new Set();
@@ -277,7 +288,7 @@ export class CommandExplorer {
         this.node.classed('dimmed', false);
     }
 
-    showTooltip(d) {
+    showTooltip(event, d) {
         let tooltip = d3.select('#graph-tooltip');
         if (tooltip.empty()) {
             tooltip = d3.select('body').append('div')
